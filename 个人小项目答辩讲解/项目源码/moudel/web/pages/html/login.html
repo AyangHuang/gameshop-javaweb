@@ -49,6 +49,7 @@
 </div>
 
 <script>
+    var url = "localhost:8080"
     var signUpButton = document.getElementById('signUp');
     var signInButton = document.getElementById('signIn');
     var container = document.getElementById('dowebok');
@@ -99,13 +100,13 @@
 
             //发送ajax请求
             $.ajax({
-                url: "http://localhost:8080/web/login",
+                url: "http://" + url + "/web/login",
                 data: { action: "ajaxLogin", "username": username, "password": passwordMD5 },
                 type: "POST",
                 //bug！！！json格式错误就不能执行success
                 success: function (data) {
                     if (data.isSuccess === "true") {
-                        window.location.replace("http://localhost:8080/web/index.html")
+                        window.location.replace("http://" + url + "/web/index.html")
                     } else if (data.isSuccess === "false"){
                         $("#loginFalse").html("用户名或密码错误")
                     } else {
@@ -127,7 +128,7 @@
             } else {
                 isLength = true
                 $.ajax({
-                    url: "http://localhost:8080/web/login",
+                    url: "http://" + url + "/web/login",
                     data: { action: "ajaxSignUpJudgeUsername", "username": username },
                     type: "POST",
                     success: function (data) {
@@ -179,7 +180,7 @@
             let username = $("#username_signup").val()
             let passwordMD5 = md5(password)
             $.ajax({
-                url: "http://localhost:8080/web/login",
+                url: "http://" + url + "/web/login",
                 data: { action: "ajaxSignUp", "username": username, "password": passwordMD5 },
                 type: "POST",
                 success: function (data) {

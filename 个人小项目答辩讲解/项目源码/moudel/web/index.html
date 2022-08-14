@@ -179,6 +179,11 @@
 
 </body>
     <script>
+        // var url = "114.132.160.110"
+        var url = "localhost:8080"
+    </script>
+
+    <script>
         function getCookie(name) {
             // 拆分 cookie 字符串
             let cookieArr = document.cookie.split(";");
@@ -200,17 +205,17 @@
         function buy() {
             $(".buy").click(function () {
                 if (getCookie("JSESSIONID") === null || getCookie("username") === null || getCookie("password") === null) {
-                    window.location.replace("http://localhost:8080/web/pages/html/login.html")
+                    window.location.replace("http://" + url + "/web/pages/html/login.html")
                 } else {
                     $.ajax({
                         //加user后端会拦截验证，前端判断有没有登录
-                        url: "http://localhost:8080/web/user/order",
+                        url: "http://" + url + "/web/user/order",
                         data : {action:"ajaxBuy", game_id: $(this).parent().attr('id')},
                         type : "POST",
                         success:function (data) {
                             if (data.freshSignUp !== undefined) {
                                 $.removeCookie('JSESSIONID',{ path: 'web/'})
-                                window.location.replace("http://localhost:8080/web/pages/html/login.html")
+                                window.location.replace("http://" + url + "/web/pages/html/login.html")
                             } else {
                                 if (data.isSuccess == "true") {
                                     alert("购买成功")
@@ -232,17 +237,17 @@
         function addCar() {
             $(".addCar").click(function () {
                 if (getCookie("JSESSIONID") === null || getCookie("username") === null || getCookie("password") === null) {
-                    window.location.replace("http://localhost:8080/web/pages/html/login.html")
+                    window.location.replace("http://" + url + "/web/pages/html/login.html")
                 } else {
                     $.ajax({
                         //加user后端会拦截验证，前端判断有没有登录
-                        url: "http://localhost:8080/web/user/order",
+                        url: "http://" + url + "/web/user/order",
                         data : {action:"ajaxAddCar", game_id: $(this).parent().attr('id')},
                         type : "POST",
                         success:function (data) {
                             if (data.freshSignUp !== undefined) {
                                 $.removeCookie('JSESSIONID',{ path: 'web/'})
-                                window.location.replace("http://localhost:8080/web/pages/html/login.html")
+                                window.location.replace("http://" + url + "/web/pages/html/login.html")
                             } else {
                                 if (data.isSuccess == "-1") {
                                     alert("已在游戏库，请勿重复购买")
@@ -268,7 +273,7 @@
             return
         }
         $.ajax({
-            url: "http://localhost:8080/web/search",
+            url: "http://" + url + "/web/search",
             data: {action:"ajaxSelect", "text":text},
             type: "POST",
             success:function (data) {
@@ -307,7 +312,7 @@
             return
         }
         $.ajax({
-            url: "http://localhost:8080/web/search",
+            url: "http://" + url + "/web/search",
             data: {action:"ajaxSearch", "text":text},
             type: "POST",
             success:function (data) {
@@ -337,16 +342,16 @@
 
     $("#car").click(function () {
         if (getCookie("JSESSIONID") === null || getCookie("username") === null || getCookie("password") === null) {
-            window.location.replace("http://localhost:8080/web/pages/html/login.html")
+            window.location.replace("http://" + url + "/web/pages/html/login.html")
         } else {
-            window.open('http://localhost:8080/web/pages/html/car.html')
+            window.open("http://" + url + "/web/pages/html/car.html")
         }
     })
     $("#store").click(function () {
         if (getCookie("JSESSIONID") === null || getCookie("username") === null || getCookie("password") === null) {
-            window.location.replace("http://localhost:8080/web/pages/html/login.html")
+            window.location.replace("http://" + url + "/web/pages/html/login.html")
         } else {
-            window.open('http://localhost:8080/web/pages/html/store.html')
+            window.open("http://" + url + "/web/pages/html/store.html")
         }
     })
 </script>
@@ -361,7 +366,7 @@
             userDomJ.html(username)
             $("#userDiv").append("<input id=\"signOut\" type='button' value='退出登录'>")
         } else {
-            userDomJ.attr("href", "http://localhost:8080/web/pages/html/login.html");
+            userDomJ.attr("href", "http://" + url + "/web/pages/html/login.html");
             userDomJ.html("登录")
             $("#signOut").remove()
         }
@@ -370,7 +375,7 @@
     function signOut() {
         $("#signOut").click(function () {
             $.ajax({
-                url:"http://localhost:8080/web/login",
+                url:"http://" + url + "/web/login",
                 data: {action: "ajaxLoginOut"},
                 type: "POST",
                 success: function (data) {
@@ -389,7 +394,7 @@
     function autoSignIn() {
         if (getCookie("username") !== null && getCookie("password") !== null) {
             $.ajax({
-                url: "http://localhost:8080/web/login",
+                url: "http://" + url + "/web/login",
                 data: {action: "ajaxAutoSignIn"},
                 type: "POST",
                 success:function (data) {
@@ -532,7 +537,7 @@
 
     function ajaxJumpPageNo(pageNo) {
         $.ajax({
-            url: "http://localhost:8080/web/page",
+            url: "http://" + url + "/web/page",
             data :{action: "ajaxPageGame", "pageNo":pageNo},
             type: "POST",
             success: function (data) {
@@ -557,7 +562,6 @@
                     addPreviousLister()
                     addFirstLister()
                     addLastLister(page.pageTotal)
-                    addJumpLister()
                     addJumpLister(page.pageTotal)
                 }
             },
@@ -572,8 +576,9 @@
 
     }
 
+    //游戏页面加载
     $.ajax({
-        url: "http://localhost:8080/web/page",
+        url: "http://" + url + "/web/page",
         data: {action: "ajaxFirstPage"},
         type: "POST",
         success: function (data) {
@@ -596,8 +601,7 @@
                 addNextLister()
                 addPreviousLister()
                 addFirstLister()
-                addLastLister()
-                addJumpLister()
+                addLastLister(page.pageTotal)
                 addJumpLister(page.pageTotal)
             }
         },
