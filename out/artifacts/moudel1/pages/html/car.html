@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <head>
+    <meta charset="UTF-8">
+    <title>购物车界面</title>
+    <style>
+        body{
+            margin-top: 0;
+            text-align: center;
+        }
+        #main{
+            width: 1350px;
+            text-align: center;
+            margin: 0 auto;
+        }
+        #allCommodity{
+            margin-left:10px;
+        }
+        #allCommodity div{
+            float: left;
+            margin-left: 10px;
+            margin-top: 15px;
+        }
+        .commodity{
+            height: 250px;
+            width:250px ;
+            border: 1px solid #AAA;
+        }
+        .commodity img{
+            width: 250px;
+            height: 160px;
+        }
+        .commodity .s2{
+            display: inline-block;
+            font-weight: 700;
+            font-family: '宋体';
+            height: 20px;
+            line-height: 20px;
+            margin-bottom: 6px;
+        }
+        .commodity .s1{
+            display: inline-block;
+            font-weight: 700;
+            font-family: '宋体';
+            height: 16px;
+            line-height: 16px;
+        }
+
+        .s1{
+            color: darkorange;
+        }
+
+        .commodity p{
+            font-weight: 700;
+            font-family: '宋体';
+            color: #AAA;
+            margin-top: 0;
+            margin-right: -140px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="main" align="center">
+    <hr />
+    购物车游戏总数：<label id="totalCount"></label> 个&nbsp
+    游戏总价格：<label id="totalPrice"></label> ￥&nbsp
+    <button id="buyAll">购买全部</button>
+    <div id="allCommodity">
+<!--        ajax动态获取物品-->
+    </div>
+</div>
+
+</body>
+<script>
+    let totalPrice = 0;
+    var totalCount = 0;
+    $("#buyAll").click(function () {
+        if (getCookie("JSESSIONID") === null || getCookie("username") === null || getCookie("password") === null) {
+            window.location.replace("http://" + url + "/web/pages/html/login.html")
+        } else {
+            if (totalCount === 0) {
+                alert("购物车游戏数量为0！")
+                return
+            }
+            $.ajax({
+                url: "http://" + url + "/web/user",
+                data: {action: "ajaxBuyAll"},
+                type: "POST",
+                success: function (data) {
+                    if (data.freshSignUp !== undefined) {
+                        $.removeCookie('JSESSIONID',{ path: 'web/'})
+                        window.location.replace("http://" + url + "/web/pages/html/login.html")
+                    } else {
+                        if (data.isSuccess == "true") {
+                            totalCount = 0
+                            $("#allCommodity").children().remove()
+                            $("#totalCount").html(" " + 0)
+                            $("#totalPrice").html(" " + 0)
+                            alert("购买成功")
+                        } else {
+                            alert("购买失败，请联系管理人员")
+                        }
+                    }
+                },
+                dataType: "json"
+            })
+        }
+    })
+
+    function getCookie(name) {
+        // 拆分 cookie 字符串
+        let cookieArr = document.cookie.split(";");
+        // 循环遍历数组元素
+        for(let i = 0; i < cookieArr.length; i++) {
+            let cookiePair = cookieArr[i].split("=");
+            /* 删除 cookie 名称开头的空白并将其与给定字符串进行比较 */
+            if(name == cookiePair[0].trim()) {
+                // 解码cookie值并返回
+                return decodeURIComponent(cookiePair[1]);
+            }
+        }
+        // 如果未找到，则返回null
+        return null;
+    }
+
+    //获取物品
+    $.ajax({
+
+        url: "http://" + url + "/web/user",
+        data: {action:"ajaxGetCar"},
+        type: "POST",
+        success:function (data) {
+            if (data.freshSignUp !== undefined) {
+                window.location.replace("http://" + url + "/web/pages/html/login.html")
+                return
+            }
+            totalPrice = data.totalPrice
+            totalCount = data.totalCount
+            let arrayGames = data.games
+            $("#totalCount").html(" " + String(totalCount))
+            $("#totalPrice").html(" " + String(totalPrice))
+            for (let i = 0; i < arrayGames.length; i++) {
+                $("#allCommodity").append(
+                    "<div class='commodity' id='" + arrayGames[i].game_id + "'>" +
+                        "<img src='" + arrayGames[i].image_url + "'/>" +
+                        "<span class='s1'>￥" + arrayGames[i].game_price + "</span><br/>" +
+                        "<span class='s2'>" + arrayGames[i].game_name + "</span><br/>" +
+                        // "<input class='buy'  type='button' value='购买'>&nbsp" +
+                        "<input class='removeCar'  type='button' value='移除购物车'>" +
+                    "</div>"
+                )
+            }
+            //绑定移除购物车事件
+            $(".removeCar").click(function () {
+                let id = $(this).parent().attr('id')
+                if (getCookie("JSESSIONID") === null || getCookie("username") === null || getCookie("password") === null) {
+                    window.location.replace("http://" + url + "/web/pages/html/login.html")
+                } else {
+                    $.ajax({
+                        //加user后端会拦截验证，前端判断有没有登录
+                        url: "http://" + url + "/web/user/order",
+                        data : {action:"ajaxRemoveCar", game_id: $(this).parent().attr('id')},
+                        type : "POST",
+                        success:function (data) {
+                            if (data.freshSignUp !== undefined) {
+                                $.removeCookie('JSESSIONID',{ path: 'web/'})
+                                window.location.replace("http://" + url + "/web/pages/html/login.html")
+                            } else {
+                                if (data.isSuccess == "true") {
+                                    totalPrice = data.totalPrice
+                                    totalCount = data.totalCount
+                                    $("#totalCount").html(" " + String(totalCount))
+                                    $("#totalPrice").html(" " + String(totalPrice))
+                                    $("#"+ id).remove()
+                                    alert("移除成功")
+                                } else {
+                                    alert("移除失败，请联系管理人员")
+                                }
+                            }
+                        },
+                        dataType : "json"
+                    })
+                }
+            })
+        },
+        dataType: "json"
+    })
+
+</script>
+<!--    <div class='commodity'>-->
+<!--        <img src='https://media.st.dl.eccdnx.com/steam/apps/1466860/header.jpg?t=1656091390'/>-->
+<!--        <span class='s1'>￥248.0</span><br />-->
+<!--        <span class='s2'>Age of Empires IV</span><br />-->
+<!--        <input type='button' value='购买'>&nbsp<input type='button' value='加入购物车'>-->
+<!--    </div>-->
+</html>
