@@ -79,12 +79,12 @@
 
     //获取物品
     $.ajax({
-        url: "http://localhost:8080/web/user",
+        url: "http://" + url + "/web/user",
         data: {action:"ajaxGetUserStore"},
         type: "POST",
         success:function (data) {
             if (data.freshSignUp !== undefined) {
-                window.location.replace("http://localhost:8080/web/pages/html/login.html")
+                window.location.replace("http://" + url + "/web/pages/html/login.html")
                 return
             }
             totalPrice = data.totalPrice

@@ -3,8 +3,7 @@ package utils;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 
 import javax.sql.DataSource;
-import java.io.FileReader;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,10 +16,12 @@ public class JDBCUtil {
     static {
         Properties properties = new Properties();
         try {
-            InputStreamReader inputStreamReader = new FileReader("G:\\coding\\java-project\\shixun\\moudel\\db\\druid.properties");
-            properties.load(inputStreamReader);
-//          properties.load(new FileReader("src\\druid.properties"));
-//          properties.load(inputStream);
+//            InputStreamReader inputStreamReader = new FileReader("G:\\coding\\java-project\\shixun\\moudel\\db\\druid.properties");
+//            InputStreamReader inputStreamReader = new FileReader("G:\\coding\\java-project\\shixun\\moudel\\db\\druid.properties");
+//            properties.load(inputStreamReader);
+            InputStream in = JDBCUtil.class.getClassLoader().getResourceAsStream("db.properties");
+//            InputStreamReader in = new FileReader("/opt/tomcat-8.4/apache-tomcat-8.5.59/webapps/web/WEB-INF/classes/db.properties");
+            properties.load(in);
             dataSource = DruidDataSourceFactory.createDataSource(properties);
         } catch (Exception e) {
             e.printStackTrace();

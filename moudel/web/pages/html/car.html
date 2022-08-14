@@ -79,20 +79,20 @@
     var totalCount = 0;
     $("#buyAll").click(function () {
         if (getCookie("JSESSIONID") === null || getCookie("username") === null || getCookie("password") === null) {
-            window.location.replace("http://localhost:8080/web/pages/html/login.html")
+            window.location.replace("http://" + url + "/web/pages/html/login.html")
         } else {
             if (totalCount === 0) {
                 alert("购物车游戏数量为0！")
                 return
             }
             $.ajax({
-                url: "http://localhost:8080/web/user",
+                url: "http://" + url + "/web/user",
                 data: {action: "ajaxBuyAll"},
                 type: "POST",
                 success: function (data) {
                     if (data.freshSignUp !== undefined) {
                         $.removeCookie('JSESSIONID',{ path: 'web/'})
-                        window.location.replace("http://localhost:8080/web/pages/html/login.html")
+                        window.location.replace("http://" + url + "/web/pages/html/login.html")
                     } else {
                         if (data.isSuccess == "true") {
                             totalCount = 0
@@ -129,12 +129,12 @@
     //获取物品
     $.ajax({
 
-        url: "http://localhost:8080/web/user",
+        url: "http://" + url + "/web/user",
         data: {action:"ajaxGetCar"},
         type: "POST",
         success:function (data) {
             if (data.freshSignUp !== undefined) {
-                window.location.replace("http://localhost:8080/web/pages/html/login.html")
+                window.location.replace("http://" + url + "/web/pages/html/login.html")
                 return
             }
             totalPrice = data.totalPrice
@@ -157,17 +157,17 @@
             $(".removeCar").click(function () {
                 let id = $(this).parent().attr('id')
                 if (getCookie("JSESSIONID") === null || getCookie("username") === null || getCookie("password") === null) {
-                    window.location.replace("http://localhost:8080/web/pages/html/login.html")
+                    window.location.replace("http://" + url + "/web/pages/html/login.html")
                 } else {
                     $.ajax({
                         //加user后端会拦截验证，前端判断有没有登录
-                        url: "http://localhost:8080/web/user/order",
+                        url: "http://" + url + "/web/user/order",
                         data : {action:"ajaxRemoveCar", game_id: $(this).parent().attr('id')},
                         type : "POST",
                         success:function (data) {
                             if (data.freshSignUp !== undefined) {
                                 $.removeCookie('JSESSIONID',{ path: 'web/'})
-                                window.location.replace("http://localhost:8080/web/pages/html/login.html")
+                                window.location.replace("http://" + url + "/web/pages/html/login.html")
                             } else {
                                 if (data.isSuccess == "true") {
                                     totalPrice = data.totalPrice
