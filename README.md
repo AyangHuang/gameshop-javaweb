@@ -1,6 +1,6 @@
 
 
-已经部署到云服务器，请访问 [http://ayang.ink/gameshop](ayang.ink/gameshop)
+已经部署到云服务器，请访问 http://ayang.ink/gameshop
 
 项目讲解看 [项目讲解](https://github.com/AyangHuang/gameshop-javaweb/blob/master/%E4%B8%AA%E4%BA%BA%E5%B0%8F%E9%A1%B9%E7%9B%AE%E7%AD%94%E8%BE%A9%E8%AE%B2%E8%A7%A3/%E9%A1%B9%E7%9B%AE%E8%AE%B2%E8%A7%A3/%E9%A1%B9%E7%9B%AE%E8%AE%B2%E8%A7%A3.md)
 
